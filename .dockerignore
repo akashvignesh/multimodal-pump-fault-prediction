@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+notebooks/
+.streamlit/__pycache__/
+test_accuracy_output.txt
+ACCURACY_REPORT.md
+extract_examples.py
+extract_samples.py

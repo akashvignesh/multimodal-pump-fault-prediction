@@ -1,0 +1,22 @@
+# Inherit production dependencies
+-r requirements.txt
+
+# SHAP explanations (optional at runtime)
+shap>=0.44.0
+
+# PDF image extraction (optional at runtime)
+PyMuPDF>=1.23.0
+
+# Training & tuning
+optuna>=3.4.0
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+
+# Load testing
+locust>=2.20.0
+
+# Utilities
+python-dotenv>=1.0.0
