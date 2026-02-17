@@ -199,14 +199,27 @@ python -c "import torch; import lightgbm; import transformers; print('OK')"
 
 ## Data Placement
 
+### Download Data
+
+**All required data files are available here:**
+
+📥 **[Google Drive Folder](https://drive.google.com/drive/folders/19V-kQsAaLnxQI_4dxVCp-VjhPwJq3U4r?usp=sharing)**
+
+**Quick setup:**
+1. Download the entire `data/` folder from the Google Drive link above
+2. Extract it into your project root: `pump-fault-risk-service/data/`
+3. Your folder structure should match the table below
+
+### Data Structure
+
 The repository expects data in these locations:
 
-| Path | Description | Required |
-|:-----|:-----------|:--------:|
-| `data/baseline_model/sensor_data/sensor.csv` | 220K-row Kaggle pump sensor data | For `train_baseline_full.py` only |
-| `data/multimodal_model/sensor_data.csv` | 241-row sensor data (1 per pump) | **Yes** |
-| `data/multimodal_model/image_mapping.csv` | Maps serial_number → image path + label | **Yes** |
-| `data/multimodal_model/images/` | 241 pump inspection images | **Yes** |
+| Path | Description | Required | Size |
+|:-----|:-----------|:--------:|------|
+| `data/baseline_model/sensor_data/sensor.csv` | 220K-row Kaggle pump sensor data | Optional | ~50 MB |
+| `data/multimodal_model/sensor_data.csv` | 241-row sensor data (1 per pump) | **Yes** | ~50 KB |
+| `data/multimodal_model/image_mapping.csv` | Maps serial_number → image path + label | **Yes** | ~10 KB |
+| `data/multimodal_model/images/` | 241 pump inspection images | **Yes** | ~500 MB |
 
 The 220K-row baseline CSV (`sensor.csv`, ~50 MB) is not required for the primary training pipeline — only for the optional `train_baseline_full.py` script.
 

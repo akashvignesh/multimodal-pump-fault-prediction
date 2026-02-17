@@ -88,6 +88,25 @@ with c3:
 st.divider()
 
 # ══════════════════════════════════════════════════════════════════════════════
+# DATA SETUP (IMPORTANT)
+# ══════════════════════════════════════════════════════════════════════════════
+
+st.markdown('<div class="section-header">📥 Data Setup Required</div>', unsafe_allow_html=True)
+
+st.info(
+    "**Before running predictions or training:**\n\n"
+    "1. Download data from: **[Google Drive Folder](https://drive.google.com/drive/folders/19V-kQsAaLnxQI_4dxVCp-VjhPwJq3U4r?usp=sharing)**\n\n"
+    "2. Extract to: `pump-fault-risk-service/data/`\n\n"
+    "3. Required files:\n"
+    "   - `data/multimodal_model/sensor_data.csv`\n"
+    "   - `data/multimodal_model/image_mapping.csv`\n"
+    "   - `data/multimodal_model/images/` (pump photos)\n\n"
+    "See README.md → 'Data Placement' for details."
+)
+
+st.divider()
+
+# ══════════════════════════════════════════════════════════════════════════════
 # WHAT WE BUILT
 # ══════════════════════════════════════════════════════════════════════════════
 
