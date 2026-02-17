@@ -6,21 +6,71 @@ Sensor data and pump images are **jointly trained** — joined on `serial_number
 
 ---
 
+## Quick Start (Get Running in 5 Minutes)
+
+> **Full step-by-step guide:** See [LOCAL_SETUP.md](LOCAL_SETUP.md) for detailed instructions for both Docker and local Python setup.
+
+### Option A: Docker (Recommended)
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/akashvignesh/Oxmaint_AI_ML_Intern.git
+cd Oxmaint_AI_ML_Intern
+
+# 2. Download data/ folder from Google Drive and place in project root
+#    📥 https://drive.google.com/drive/folders/19V-kQsAaLnxQI_4dxVCp-VjhPwJq3U4r?usp=sharing
+
+# 3. Build and run (starts API on :8000 + Streamlit UI on :8501)
+docker compose up --build -d
+
+# 4. Wait ~60s for model loading, then open:
+#    Streamlit UI:  http://localhost:8501
+#    API Docs:      http://localhost:8000/docs
+#    Health Check:  http://localhost:8000/health
+```
+
+### Option B: Local Python
+
+```bash
+# 1. Clone + download data (same as above)
+git clone https://github.com/akashvignesh/Oxmaint_AI_ML_Intern.git
+cd Oxmaint_AI_ML_Intern
+
+# 2. Create virtual environment
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+# source .venv/bin/activate      # macOS/Linux
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Start API server
+uvicorn src.main:app --host 0.0.0.0 --port 8000
+
+# 5. Start Streamlit UI (new terminal, same venv)
+streamlit run app/Home.py --server.port 8501
+```
+
+> **Important:** Data files are NOT included in the Git repo. You must download them from the [Google Drive link](https://drive.google.com/drive/folders/19V-kQsAaLnxQI_4dxVCp-VjhPwJq3U4r?usp=sharing) before running.
+
+---
+
 ## Table of Contents
 
-1. [Architecture](#architecture)
-2. [Project Structure](#project-structure)
-3. [Environment Setup](#environment-setup)
-4. [Data Placement](#data-placement)
-5. [Training](#training)
-6. [Serving & Inference](#serving--inference)
-7. [Evaluation](#evaluation)
-8. [Benchmarks & Load Testing](#benchmarks--load-testing)
-9. [API Reference](#api-reference)
-10. [Docker Deployment](#docker-deployment)
-11. [Troubleshooting](#troubleshooting)
-12. [Large Files & Git](#large-files--git)
-13. [Documentation Index](#documentation-index)
+1. [Quick Start](#quick-start-get-running-in-5-minutes)
+2. [Architecture](#architecture)
+3. [Project Structure](#project-structure)
+4. [Environment Setup](#environment-setup)
+5. [Data Placement](#data-placement)
+6. [Training](#training)
+7. [Serving & Inference](#serving--inference)
+8. [Evaluation](#evaluation)
+9. [Benchmarks & Load Testing](#benchmarks--load-testing)
+10. [API Reference](#api-reference)
+11. [Docker Deployment](#docker-deployment)
+12. [Troubleshooting](#troubleshooting)
+13. [Large Files & Git](#large-files--git)
+14. [Documentation Index](#documentation-index)
 
 ---
 
@@ -170,6 +220,8 @@ pump-fault-risk-service/
 - ~2 GB disk for dependencies
 
 ### Local Installation
+
+> **Detailed guide with troubleshooting:** See [LOCAL_SETUP.md](LOCAL_SETUP.md)
 
 ```bash
 # Clone the repository
@@ -591,6 +643,7 @@ unzip pump-sensor-data.zip -d data/baseline_model/sensor_data/
 | Document | Description |
 |:---------|:-----------|
 | [README.md](README.md) | This file — setup, usage, API reference |
+| [LOCAL_SETUP.md](LOCAL_SETUP.md) | Step-by-step local build guide (Docker + Python) |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System architecture, transformer flow, modality extensibility |
 | [docs/EVALUATION.md](docs/EVALUATION.md) | Model metrics, ablation summary, limitations |
 | [docs/LOAD_SCALE.md](docs/LOAD_SCALE.md) | Load test results, scaling strategy, cost estimates |
