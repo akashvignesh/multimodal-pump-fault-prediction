@@ -52,7 +52,9 @@ def _generate_explanation(fp: float, fc: float, signals: List[str]) -> str:
 
     clean_signals = [s.replace("_", " ") for s in signals[:3]]
     if len(clean_signals) == 0:
-        signal_phrase = "insufficient input data"
+        signal_phrase = "no sensor or image data provided"
+    elif "no input data" in " ".join(signals):
+        signal_phrase = "no sensor or image data provided"
     elif len(clean_signals) == 1:
         signal_phrase = clean_signals[0]
     else:
@@ -97,25 +99,49 @@ except ImportError:
 def extract_pdf_images(pdf_bytes: bytes, max_images: int = 5) -> list:
     """Extract PIL images embedded in a PDF. Returns list of PIL.Image."""
     images: list = []
-    if not HAS_PYMUPDF or not HAS_PIL:
+    if not HAS_PYMUPDF:
+        logger.warning(
+            "PyMuPDF not installed - cannot extract images from PDFs. "
+            "Install with: pip install PyMuPDF>=1.23.0"
+        )
         return images
-    doc = pymupdf.open(stream=pdf_bytes, filetype="pdf")
-    for page in doc:
-        if len(images) >= max_images:
-            break
-        for img_info in page.get_images(full=True):
+    if not HAS_PIL:
+        logger.warning("PIL not installed - cannot process images")
+        return images
+    
+    try:
+        doc = pymupdf.open(stream=pdf_bytes, filetype="pdf")
+        page_count = len(doc)
+        logger.info(f"Processing PDF with {page_count} pages")
+        
+        for page_num, page in enumerate(doc, 1):
             if len(images) >= max_images:
                 break
-            xref = img_info[0]
-            base_image = doc.extract_image(xref)
-            if base_image:
-                img_data = base_image["image"]
-                try:
-                    pil_img = PILImage.open(io.BytesIO(img_data)).convert("RGB")
-                    images.append(pil_img)
-                except Exception:
-                    pass
-    doc.close()
+            page_images = page.get_images(full=True)
+            logger.debug(f"Page {page_num}: found {len(page_images)} images")
+            
+            for img_info in page_images:
+                if len(images) >= max_images:
+                    break
+                xref = img_info[0]
+                base_image = doc.extract_image(xref)
+                if base_image:
+                    img_data = base_image["image"]
+                    try:
+                        pil_img = PILImage.open(io.BytesIO(img_data)).convert("RGB")
+                        images.append(pil_img)
+                        logger.debug(f"Successfully extracted image {len(images)}")
+                    except Exception as e:
+                        logger.debug(f"Failed to decode image: {e}")
+        doc.close()
+        
+        if images:
+            logger.info(f"Extracted {len(images)} images from PDF")
+        else:
+            logger.warning("No images found in PDF document")
+    except Exception as e:
+        logger.error(f"Failed to process PDF: {e}", exc_info=True)
+    
     return images
 
 
@@ -138,6 +164,23 @@ class InferenceOrchestrator:
             return
 
         logger.info("Initializing InferenceOrchestrator...")
+        
+        # Set random seeds for reproducibility
+        import random
+        import numpy as np
+        random.seed(42)
+        np.random.seed(42)
+        
+        # Also set for torch if available
+        try:
+            import torch
+            torch.manual_seed(42)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(42)
+            torch.backends.cudnn.deterministic = True
+            torch.backends.cudnn.benchmark = False
+        except ImportError:
+            pass
 
         # Load models
         self.sensor_model = SensorBaselineModel()
@@ -317,9 +360,16 @@ class InferenceOrchestrator:
         all_images: list = []  # PIL Images from PDFs
 
         # ---- PDF processing (extract images) ----
+        if pdf_bytes_list:
+            logger.info(f"Processing {len(pdf_bytes_list)} PDF document(s)")
         for pdf_b in (pdf_bytes_list or []):
             pdf_imgs = extract_pdf_images(pdf_b)
             all_images.extend(pdf_imgs)
+        if pdf_bytes_list and not all_images:
+            logger.warning(
+                "PDF(s) provided but no images extracted. "
+                "Ensure PyMuPDF is installed and PDFs contain images."
+            )
 
         # ---- Sensor ----
         sensor_embedding = None

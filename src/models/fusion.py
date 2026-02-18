@@ -77,7 +77,11 @@ class GatedFusion:
 
         # Nothing available -> uncertain fallback
         if not modality_scores:
-            return 0.5, 0.1, ["insufficient_data"]
+            logger.warning(
+                "No modality data available for fusion. "
+                "Provide sensor_window and/or image_refs/PDFs with images."
+            )
+            return 0.5, 0.1, ["no_input_data"]
 
         scores = np.array(modality_scores)
         confidences = np.array(modality_confidences)

@@ -127,20 +127,35 @@ class SensorBaselineModel:
         """Load model from disk if available."""
         if self.model_path and Path(self.model_path).exists():
             try:
+                import hashlib
+                # Calculate model file checksum for debugging
                 with open(self.model_path, 'rb') as f:
+                    file_bytes = f.read()
+                    checksum = hashlib.md5(file_bytes[:10000]).hexdigest()[:8]
+                    f.seek(0)
                     saved = pickle.load(f)
+                
                 self.model = saved.get('model')
                 self.feature_names = saved.get('feature_names', [])
-                logger.info(f"Loaded sensor baseline model from {self.model_path}")
+                model_size = Path(self.model_path).stat().st_size
+                
+                logger.info(
+                    f"Loaded sensor baseline model: {self.model_path} "
+                    f"(size: {model_size:,} bytes, checksum: {checksum}, "
+                    f"features: {len(self.feature_names)})"
+                )
                 
                 # Pre-compute global feature importances from LightGBM gain
                 self._precompute_importances()
                 
             except Exception as e:
-                logger.warning(f"Failed to load model: {e}")
+                logger.error(f"Failed to load model from {self.model_path}: {e}", exc_info=True)
                 self.model = None
         else:
-            logger.warning(f"Model file not found at {self.model_path}, using fallback")
+            logger.warning(
+                f"Model file not found at {self.model_path} "
+                f"(absolute path: {Path(self.model_path).absolute()}), using fallback"
+            )
 
     def _precompute_importances(self) -> None:
         """Pre-compute global feature importances from the trained model.
@@ -442,18 +457,29 @@ class JointSensorImageModel:
             )
             return
         try:
-            with open(self.model_path, "rb") as f:
+            import hashlib
+            # Calculate model file checksum for debugging
+            with open(self.model_path, 'rb') as f:
+                file_bytes = f.read()
+                checksum = hashlib.md5(file_bytes[:10000]).hexdigest()[:8]
+                f.seek(0)
                 saved = pickle.load(f)
+            
             self.model = saved.get("model")
             self.feature_names = saved.get("feature_names", [])
+            model_size = Path(self.model_path).stat().st_size
+            
             logger.info(
-                "Loaded joint sensor+image model from %s (%d features)",
+                "Loaded joint sensor+image model: %s "
+                "(size: %s bytes, checksum: %s, features: %d)",
                 self.model_path,
+                f"{model_size:,}",
+                checksum,
                 len(self.feature_names),
             )
             self._precompute_importances()
         except Exception as e:
-            logger.warning("Failed to load joint sensor+image model: %s", e)
+            logger.error("Failed to load joint sensor+image model: %s", e, exc_info=True)
 
     def _precompute_importances(self) -> None:
         if self.model is None:
