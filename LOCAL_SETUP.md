@@ -24,8 +24,8 @@ The fastest way to get everything running. One command starts both the API and t
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/akashvignesh/Oxmaint_AI_ML_Intern.git
-cd Oxmaint_AI_ML_Intern
+git clone https://github.com/akashvignesh/multimodal-pump-fault-prediction.git
+cd multimodal-pump-fault-prediction
 ```
 
 ### Step 2: Download Data
@@ -35,7 +35,7 @@ cd Oxmaint_AI_ML_Intern
 Place the downloaded `data/` folder in the project root:
 
 ```
-Oxmaint_AI_ML_Intern/
+multimodal-pump-fault-prediction/
 ├── data/                          ← Downloaded from Google Drive
 │   ├── baseline_model/
 │   │   └── sensor_data/
@@ -114,8 +114,8 @@ docker ps
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/akashvignesh/Oxmaint_AI_ML_Intern.git
-cd Oxmaint_AI_ML_Intern
+git clone https://github.com/akashvignesh/multimodal-pump-fault-prediction.git
+cd multimodal-pump-fault-prediction
 ```
 
 ### Step 2: Download Data
@@ -306,7 +306,7 @@ python scripts/infer.py --sample at-risk
 ## Project Structure (Key Files)
 
 ```
-Oxmaint_AI_ML_Intern/
+multimodal-pump-fault-prediction/
 │
 ├── src/                           # Application source code
 │   ├── main.py                    # FastAPI app entry point

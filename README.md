@@ -14,8 +14,8 @@ Sensor data and pump images are **jointly trained** — joined on `serial_number
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/akashvignesh/Oxmaint_AI_ML_Intern.git
-cd Oxmaint_AI_ML_Intern
+git clone https://github.com/akashvignesh/multimodal-pump-fault-prediction.git
+cd multimodal-pump-fault-prediction
 
 # 2. Download data/ folder from Google Drive and place in project root
 #    📥 https://drive.google.com/drive/folders/19V-kQsAaLnxQI_4dxVCp-VjhPwJq3U4r?usp=sharing
@@ -33,8 +33,8 @@ docker compose up --build -d
 
 ```bash
 # 1. Clone + download data (same as above)
-git clone https://github.com/akashvignesh/Oxmaint_AI_ML_Intern.git
-cd Oxmaint_AI_ML_Intern
+git clone https://github.com/akashvignesh/multimodal-pump-fault-prediction.git
+cd multimodal-pump-fault-prediction
 
 # 2. Create virtual environment
 python -m venv .venv
